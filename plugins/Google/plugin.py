@@ -81,7 +81,7 @@ class Google(callbacks.PluginRegexp):
         matches = cls._decode_re.findall(text)
         results = []
         for match in matches:
-            r = dict(zip(('url', 'title', 'cacheUrl', 'content'), match))
+            r = dict(list(zip(('url', 'title', 'cacheUrl', 'content'), match)))
             r['url'] = utils.web.urlunquote(utils.web.htmlToText(r['url'].split('&amp;')[0]))
             results.append(r)
         return results
@@ -111,7 +111,7 @@ class Google(callbacks.PluginRegexp):
         headers = dict(utils.web.defaultHeaders)
         headers['Referer'] = ref
         opts = {'q': query, 'gbv': '2'}
-        for (k, v) in options.items():
+        for (k, v) in list(options.items()):
             if k == 'smallsearch':
                 if v:
                     opts['rsz'] = 'small'
@@ -152,7 +152,7 @@ class Google(callbacks.PluginRegexp):
             else:
                 results.append(url)
         if minisix.PY2:
-            repl = lambda x:x if isinstance(x, unicode) else unicode(x, 'utf8')
+            repl = lambda x:x if isinstance(x, str) else str(x, 'utf8')
             results = list(map(repl, results))
         if not results:
             return [_('No matches found.')]

@@ -64,7 +64,7 @@ SERVER_TAG_ESCAPE = [
 escape_server_tag_value = utils.str.MultipleReplacer(
         dict(SERVER_TAG_ESCAPE))
 unescape_server_tag_value = utils.str.MultipleReplacer(
-        dict(map(lambda x:(x[1],x[0]), SERVER_TAG_ESCAPE)))
+        dict([(x[1],x[0]) for x in SERVER_TAG_ESCAPE]))
 
 def parse_server_tags(s):
     server_tags = {}
@@ -77,7 +77,7 @@ def parse_server_tags(s):
     return server_tags
 def format_server_tags(server_tags):
     parts = []
-    for (key, value) in server_tags.items():
+    for (key, value) in list(server_tags.items()):
         if value is None:
             parts.append(key)
         else:
@@ -606,7 +606,7 @@ def kick(channel, nick, s='', prefix='', msg=None):
         assert isNick(nick), repr(nick)
     if msg and not prefix:
         prefix = msg.prefix
-    if minisix.PY2 and isinstance(s, unicode):
+    if minisix.PY2 and isinstance(s, str):
         s = s.encode('utf8')
     assert isinstance(s, str)
     if s:
@@ -626,7 +626,7 @@ def kicks(channels, nicks, s='', prefix='', msg=None):
         assert areNicks(nicks), repr(nicks)
     if msg and not prefix:
         prefix = msg.prefix
-    if minisix.PY2 and isinstance(s, unicode):
+    if minisix.PY2 and isinstance(s, str):
         s = s.encode('utf8')
     assert isinstance(s, str)
     if s:
@@ -643,7 +643,7 @@ def privmsg(recipient, s, prefix='', msg=None):
     if conf.supybot.protocols.irc.strictRfc():
         assert (areReceivers(recipient)), repr(recipient)
         assert s, 's must not be empty.'
-    if minisix.PY2 and isinstance(s, unicode):
+    if minisix.PY2 and isinstance(s, str):
         s = s.encode('utf8')
     assert isinstance(s, str)
     if msg and not prefix:
@@ -675,7 +675,7 @@ def notice(recipient, s, prefix='', msg=None):
     if conf.supybot.protocols.irc.strictRfc():
         assert areReceivers(recipient), repr(recipient)
         assert s, 'msg must not be empty.'
-    if minisix.PY2 and isinstance(s, unicode):
+    if minisix.PY2 and isinstance(s, str):
         s = s.encode('utf8')
     assert isinstance(s, str)
     if msg and not prefix:
@@ -725,7 +725,7 @@ def part(channel, s='', prefix='', msg=None):
         assert isChannel(channel), repr(channel)
     if msg and not prefix:
         prefix = msg.prefix
-    if minisix.PY2 and isinstance(s, unicode):
+    if minisix.PY2 and isinstance(s, str):
         s = s.encode('utf8')
     assert isinstance(s, str)
     if s:
@@ -741,7 +741,7 @@ def parts(channels, s='', prefix='', msg=None):
         assert all(isChannel, channels), channels
     if msg and not prefix:
         prefix = msg.prefix
-    if minisix.PY2 and isinstance(s, unicode):
+    if minisix.PY2 and isinstance(s, str):
         s = s.encode('utf8')
     assert isinstance(s, str)
     if s:
@@ -770,7 +770,7 @@ def topic(channel, topic=None, prefix='', msg=None):
         return IrcMsg(prefix=prefix, command='TOPIC',
                       args=(channel,), msg=msg)
     else:
-        if minisix.PY2 and isinstance(topic, unicode):
+        if minisix.PY2 and isinstance(topic, str):
             topic = topic.encode('utf8')
         assert isinstance(topic, str)
         return IrcMsg(prefix=prefix, command='TOPIC',

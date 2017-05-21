@@ -132,7 +132,7 @@ class StatsDB(plugins.ChannelUserDB):
         plugins.ChannelUserDB.__init__(self, *args, **kwargs)
 
     def serialize(self, v):
-        return v.values()
+        return list(v.values())
 
     def deserialize(self, channel, id, L):
         L = list(map(int, L))
@@ -324,7 +324,7 @@ class ChannelStats(callbacks.Plugin):
             irc.error(_('You can\'t use lambda in this command.'), Raise=True)
         expr = expr.lower()
         users = []
-        for ((c, id), stats) in self.db.items():
+        for ((c, id), stats) in list(self.db.items()):
             if ircutils.strEqual(c, channel) and \
                (id == 0 or ircdb.users.hasUser(id)):
                 e = self._env.copy()

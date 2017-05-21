@@ -42,21 +42,21 @@ from .str import normalizeWhitespace
 from . import minisix
 
 if minisix.PY2:
-    import urllib
-    import urllib2
-    from httplib import InvalidURL
-    from urlparse import urlsplit, urlunsplit, urlparse
-    from htmlentitydefs import entitydefs, name2codepoint
-    from HTMLParser import HTMLParser
-    Request = urllib2.Request
-    urlquote = urllib.quote
-    urlquote_plus = urllib.quote_plus
-    urlunquote = urllib.unquote
-    urlopen = urllib2.urlopen
+    import urllib.request, urllib.parse, urllib.error
+    import urllib.request, urllib.error, urllib.parse
+    from http.client import InvalidURL
+    from urllib.parse import urlsplit, urlunsplit, urlparse
+    from html.entities import entitydefs, name2codepoint
+    from html.parser import HTMLParser
+    Request = urllib.request.Request
+    urlquote = urllib.parse.quote
+    urlquote_plus = urllib.parse.quote_plus
+    urlunquote = urllib.parse.unquote
+    urlopen = urllib.request.urlopen
     def urlencode(*args, **kwargs):
-        return urllib.urlencode(*args, **kwargs).encode()
-    from urllib2 import HTTPError, URLError
-    from urllib import splithost, splituser
+        return urllib.parse.urlencode(*args, **kwargs).encode()
+    from urllib.error import HTTPError, URLError
+    from urllib.parse import splithost, splituser
 else:
     from http.client import InvalidURL
     from urllib.parse import urlsplit, urlunsplit, urlparse
@@ -247,7 +247,7 @@ class HtmlToText(HTMLParser, object):
                 self.append(data)
         else:
             if data in name2codepoint:
-                self.append(unichr(name2codepoint[data]))
+                self.append(chr(name2codepoint[data]))
             elif isinstance(data, str):
                 self.append(data.decode('utf8', errors='replace'))
             else:

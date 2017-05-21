@@ -229,7 +229,7 @@ class Unix(callbacks.Plugin):
             else:
                 lines = out.splitlines()
                 lines = list(map(str.rstrip, lines))
-            lines = filter(None, lines)
+            lines = [_f for _f in lines if _f]
             irc.replies(lines, joiner=' ')
         else:
             irc.error(_('The fortune command is not configured. If fortune is '
@@ -355,7 +355,7 @@ class Unix(callbacks.Plugin):
             inst.wait()
             lines = out.splitlines()
             lines = [x.decode('utf8').rstrip() for x in lines]
-            lines = filter(None, lines)
+            lines = [_f for _f in lines if _f]
             irc.replies(lines, joiner=' ')
         else:
             irc.error('The uptime command is not configured. If uptime is '
@@ -384,7 +384,7 @@ class Unix(callbacks.Plugin):
             inst.wait()
             lines = out.splitlines()
             lines = [x.decode('utf8').rstrip() for x in lines]
-            lines = filter(None, lines)
+            lines = [_f for _f in lines if _f]
             irc.replies(lines, joiner=' ')
         else:
             irc.error('The uname command is not configured. If uname is '

@@ -166,7 +166,7 @@ class FactoidsCallback(httpserver.SupyHTTPServerCallback):
                 content += ('<td rowspan="%i" class="key">'
                                 '<a name="%s" href="#%s">%s</a>'
                            '</td>') % (len(facts), key, key, key)
-                for id_, fact in facts.items():
+                for id_, fact in list(facts.items()):
                     content += '<td class="id">%i</td>' % id_
                     content += '<td class="fact">%s</td>' % fact
                     content += '</tr><tr>'
@@ -360,9 +360,9 @@ class Factoids(callbacks.Plugin, plugins.ChannelDBHandler):
         dl_metrics = [dameraulevenshtein(key, sourcekey) for sourcekey in flkeys]
         dict_metrics = dict(list(zip(flkeys, dl_metrics)))
         if min(dl_metrics) <= 2:
-            return [key for key,item in dict_metrics.items() if item <= 2]
+            return [key for key,item in list(dict_metrics.items()) if item <= 2]
         if min(dl_metrics) <= 3:
-            return [key for key,item in dict_metrics.items() if item <= 3]
+            return [key for key,item in list(dict_metrics.items()) if item <= 3]
         
         return []
                 

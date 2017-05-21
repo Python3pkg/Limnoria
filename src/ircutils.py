@@ -35,8 +35,8 @@ dicts, a nick class to handle nicks (so comparisons and hashing and whatnot
 work in an IRC-case-insensitive fashion), and numerous other things.
 """
 
-from __future__ import division
-from __future__ import print_function
+
+
 
 import re
 import sys
@@ -52,6 +52,7 @@ from .utils import minisix
 from .version import version
 
 from .i18n import PluginInternationalization
+import collections
 _ = PluginInternationalization()
 
 def debug(s, *args):
@@ -617,7 +618,7 @@ def isValidArgument(s):
 
 def safeArgument(s):
     """If s is unsafe for IRC, returns a safe version."""
-    if minisix.PY2 and isinstance(s, unicode):
+    if minisix.PY2 and isinstance(s, str):
         s = s.encode('utf-8')
     elif (minisix.PY2 and not isinstance(s, minisix.string_types)) or \
             (minisix.PY3 and not isinstance(s, str)):
@@ -686,7 +687,7 @@ class IrcDict(utils.InsensitivePreservingDict):
 class CallableValueIrcDict(IrcDict):
     def __getitem__(self, k):
         v = super(IrcDict, self).__getitem__(k)
-        if callable(v):
+        if isinstance(v, collections.Callable):
             v = v()
         return v
 
@@ -719,7 +720,7 @@ class FloodQueue(object):
         return msg.host
 
     def getTimeout(self):
-        if callable(self.timeout):
+        if isinstance(self.timeout, collections.Callable):
             return self.timeout()
         else:
             return self.timeout

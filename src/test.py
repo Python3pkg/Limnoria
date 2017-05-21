@@ -34,7 +34,7 @@ import re
 import sys
 import time
 import shutil
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import unittest
 import functools
 import threading
@@ -44,8 +44,8 @@ from . import (callbacks, conf, drivers, httpserver, i18n, ircdb, irclib,
 from .utils import minisix
 
 if minisix.PY2:
-    from httplib import HTTPConnection
-    from urllib import splithost, splituser
+    from http.client import HTTPConnection
+    from urllib.parse import splithost, splituser
     from urllib import URLopener
 else:
     from http.client import HTTPConnection
@@ -186,7 +186,7 @@ class PluginTestCase(SupyTestCase):
                     cbModule = sys.modules[cb.__class__.__module__]
                     if hasattr(cbModule, 'deprecated') and cbModule.deprecated:
                         print('')
-                        print('Ignored, %s is deprecated.' % cb.name())
+                        print(('Ignored, %s is deprecated.' % cb.name()))
                         run = False
             if run:
                 originalRunTest()
@@ -244,7 +244,7 @@ class PluginTestCase(SupyTestCase):
                                                      ignoreDeprecation=True)
                     plugin.loadPluginClass(self.irc, module)
         self.irc.addCallback(TestInstance)
-        for (name, value) in self.config.items():
+        for (name, value) in list(self.config.items()):
             group = conf.supybot
             parts = registry.split(name)
             if parts[0] == 'supybot':
@@ -258,7 +258,7 @@ class PluginTestCase(SupyTestCase):
         if self.__class__ in (PluginTestCase, ChannelPluginTestCase):
             # Necessary because there's a test in here that shouldn\'t run.
             return
-        for (group, original) in self.originals.items():
+        for (group, original) in list(self.originals.items()):
             group.setValue(original)
         ircdb.users.close()
         ircdb.ignores.close()
@@ -284,7 +284,7 @@ class PluginTestCase(SupyTestCase):
             query = query.encode('utf8') # unicode->str
         msg = ircmsgs.privmsg(to, query, prefix=frm)
         if self.myVerbose >= verbosity.MESSAGES:
-            print('Feeding: %r' % msg)
+            print(('Feeding: %r' % msg))
         if not expectException and self.myVerbose >= verbosity.EXCEPTIONS:
             conf.supybot.log.stdout.setValue(True)
         self.irc.feedMsg(msg)
@@ -295,7 +295,7 @@ class PluginTestCase(SupyTestCase):
             drivers.run()
             response = self.irc.takeMsg()
         if self.myVerbose >= verbosity.MESSAGES:
-            print('Response: %r' % response)
+            print(('Response: %r' % response))
         if not expectException and self.myVerbose >= verbosity.EXCEPTIONS:
             conf.supybot.log.stdout.setValue(False)
         return response
@@ -479,13 +479,13 @@ class ChannelPluginTestCase(PluginTestCase):
         prefixChars = conf.supybot.reply.whenAddressedBy.chars()
         if query[0] not in prefixChars and usePrefixChar:
             query = prefixChars[0] + query
-        if minisix.PY2 and isinstance(query, unicode):
+        if minisix.PY2 and isinstance(query, str):
             query = query.encode('utf8') # unicode->str
         if not expectException and self.myVerbose >= verbosity.EXCEPTIONS:
             conf.supybot.log.stdout.setValue(True)
         msg = ircmsgs.privmsg(to, query, prefix=frm)
         if self.myVerbose >= verbosity.MESSAGES:
-            print('Feeding: %r' % msg)
+            print(('Feeding: %r' % msg))
         self.irc.feedMsg(msg)
         fed = time.time()
         response = self.irc.takeMsg()
@@ -510,7 +510,7 @@ class ChannelPluginTestCase(PluginTestCase):
         else:
             ret = None
         if self.myVerbose >= verbosity.MESSAGES:
-            print('Returning: %r' % ret)
+            print(('Returning: %r' % ret))
         if not expectException and self.myVerbose >= verbosity.EXCEPTIONS:
             conf.supybot.log.stdout.setValue(False)
         return ret
@@ -560,14 +560,14 @@ def open_http(url, data=None):
         host, selector = splithost(url)
         if host:
             user_passwd, host = splituser(host)
-            host = urllib.unquote(host)
+            host = urllib.parse.unquote(host)
         realhost = host
     else:
         host, selector = url
         # check whether the proxy contains authorization information
         proxy_passwd, host = splituser(host)
         # now we proceed with the url we want to obtain
-        urltype, rest = urllib.splittype(selector)
+        urltype, rest = urllib.parse.splittype(selector)
         url = rest
         user_passwd = None
         if urltype.lower() != 'http':

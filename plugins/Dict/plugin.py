@@ -71,7 +71,7 @@ class Dict(callbacks.Plugin):
         try:
             server = conf.supybot.plugins.Dict.server()
             conn = dictclient.Connection(server)
-            dbs = conn.getdbdescs().keys()
+            dbs = list(conn.getdbdescs().keys())
             irc.reply(utils.iter.choice(dbs))
         except socket.error as e:
             irc.error(utils.web.strError(e))

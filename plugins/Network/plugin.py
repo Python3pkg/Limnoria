@@ -261,7 +261,7 @@ class Network(callbacks.Plugin):
         opts = dict(opts)
         L = ['%s: %s' % (ircd.network, ircd.server) for ircd in world.ircs]
         if 'all' in opts:
-           for net in conf.supybot.networks._children.keys():
+           for net in list(conf.supybot.networks._children.keys()):
                if net not in [ircd.network for ircd in world.ircs]:
                    L.append('%s: (%s)' % (net, _('disconnected')))
         utils.sortBy(str.lower, L)

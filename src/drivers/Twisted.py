@@ -30,10 +30,10 @@
 
 from .. import conf, drivers
 
-from twisted.names import client
-from twisted.internet import reactor, error
-from twisted.protocols.basic import LineReceiver
-from twisted.internet.protocol import ReconnectingClientFactory
+from .twisted.names import client
+from .twisted.internet import reactor, error
+from .twisted.protocols.basic import LineReceiver
+from .twisted.internet.protocol import ReconnectingClientFactory
 
 
 # This hack prevents the standard Twisted resolver from starting any
@@ -43,7 +43,7 @@ reactor.installResolver(client.createResolver())
 
 try:
     from OpenSSL import SSL
-    from twisted.internet import ssl
+    from .twisted.internet import ssl
 except ImportError:
     drivers.log.debug('PyOpenSSL is not available, '
                       'cannot connect to SSL servers.')

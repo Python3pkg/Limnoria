@@ -208,7 +208,7 @@ class Plugin(callbacks.Plugin):
             """
             isAuthor = False
             authorInfo = None
-            moduleContribs = module.__contributors__.keys()
+            moduleContribs = list(module.__contributors__.keys())
             lnick = nick.lower()
             for contrib in moduleContribs:
                 if contrib.nick.lower() == lnick:

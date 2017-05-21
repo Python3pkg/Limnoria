@@ -96,7 +96,7 @@ class String(callbacks.Plugin):
             text = codecs.getencoder('base64_codec')(text)[0].decode()
 
         # Change result into a string
-        if minisix.PY2 and isinstance(text, unicode):
+        if minisix.PY2 and isinstance(text, str):
             text = text.encode('utf-8')
         elif minisix.PY3 and isinstance(text, bytes):
             text = text.decode()
@@ -140,7 +140,7 @@ class String(callbacks.Plugin):
             return
 
         # Change result into a string
-        if minisix.PY2 and isinstance(text, unicode):
+        if minisix.PY2 and isinstance(text, str):
             text = text.encode('utf-8')
         elif minisix.PY3 and isinstance(text, bytes):
             try:

@@ -40,7 +40,7 @@ from .version import version
 from .i18n import PluginInternationalization
 _ = PluginInternationalization()
 if minisix.PY2:
-    from urllib2 import build_opener, install_opener, ProxyHandler
+    from urllib.request import build_opener, install_opener, ProxyHandler
 else:
     from urllib.request import build_opener, install_opener, ProxyHandler
 
@@ -91,7 +91,7 @@ def registerChannelValue(group, name, value):
     value.channelValue = True
     g = group.register(name, value)
     gname = g._name.lower()
-    for name in registry._cache.keys():
+    for name in list(registry._cache.keys()):
         if name.lower().startswith(gname) and len(gname) < len(name):
             name = name[len(gname)+1:] # +1 for .
             parts = registry.split(name)
@@ -390,7 +390,7 @@ def registerNetwork(name, password='', ssl=True, sasl_username='',
     return network
 
 # Let's fill our networks.
-for (name, s) in registry._cache.items():
+for (name, s) in list(registry._cache.items()):
     if name.startswith('supybot.networks.'):
         parts = name.split('.')
         name = parts[2]

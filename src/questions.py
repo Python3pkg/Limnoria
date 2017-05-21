@@ -29,7 +29,7 @@
 
 """Handles interactive questions; useful for wizards and whatnot."""
 
-from __future__ import print_function
+
 
 import sys
 import textwrap
@@ -78,9 +78,9 @@ def expect(prompt, possibilities, recursed=False, default=None,
         prompt += ansi.RESET
         print(ansi.BOLD, end=' ', file=fd)
     if minisix.PY3:
-        s = input(prompt)
+        s = eval(input(prompt))
     else:
-        s = raw_input(prompt)
+        s = input(prompt)
     s = s.strip()
     print(file=fd)
     if possibilities:

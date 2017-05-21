@@ -38,6 +38,7 @@ import math
 from . import cdb, utils
 from .utils import minisix
 from .utils.iter import ilen
+import collections
 
 class Error(Exception):
     """General error for this module."""
@@ -311,7 +312,7 @@ class CdbMapping(MappingInterface):
         del self.db[str(id)]
 
     def __iter__(self):
-        for (id, s) in self.db.items():
+        for (id, s) in list(self.db.items()):
             if id != 'nextId':
                 yield (int(id), s)
 
@@ -413,14 +414,14 @@ class Record(object):
             self.defaults[name] = default
             self.converters[name] = converter
         seen = set()
-        for (name, value) in kwargs.items():
+        for (name, value) in list(kwargs.items()):
             assert name in self.fields, 'name must be a record value.'
             seen.add(name)
             setattr(self, name, value)
         for name in self.fields:
             if name not in seen:
                 default = self.defaults[name]
-                if callable(default):
+                if isinstance(default, collections.Callable):
                     default = default()
                 setattr(self, name, default)
 

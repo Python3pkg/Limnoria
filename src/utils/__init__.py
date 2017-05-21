@@ -34,6 +34,7 @@ from . import minisix
 # csv.{join,split} -- useful functions that should exist.
 ###
 import csv
+import collections
 def join(L):
     fd = minisix.io.StringIO()
     writer = csv.writer(fd)
@@ -51,7 +52,7 @@ builtins = (__builtins__ if isinstance(__builtins__, dict) else __builtins__.__d
 
 # We use this often enough that we're going to stick it in builtins.
 def force(x):
-    if callable(x):
+    if isinstance(x, collections.Callable):
         return x()
     else:
         return x

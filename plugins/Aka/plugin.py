@@ -717,7 +717,7 @@ class Aka(callbacks.Plugin):
         if errors:
             irc.error(format(_('Error occured when importing the %n: %L'),
                 (len(errors), 'following', 'command'),
-                ['%s (%s)' % x for x in errors.items()]))
+                ['%s (%s)' % x for x in list(errors.items())]))
         else:
             irc.replySuccess()
     importaliasdatabase = wrap(importaliasdatabase, ['owner'])

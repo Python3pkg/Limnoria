@@ -93,7 +93,7 @@ class SqliteMoobotDB(object):
         self.dbs = ircutils.IrcDict()
 
     def close(self):
-        for db in self.dbs.values():
+        for db in list(self.dbs.values()):
             db.close()
         self.dbs.clear()
 

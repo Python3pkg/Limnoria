@@ -37,6 +37,7 @@ import getopt
 import inspect
 import threading
 import multiprocessing #python2.6 or later!
+import collections
 
 try:
     import resource
@@ -815,7 +816,7 @@ def contextify(spec):
     return spec
 
 def setDefault(state, default):
-    if callable(default):
+    if isinstance(default, collections.Callable):
         state.args.append(default())
     else:
         state.args.append(default)
@@ -968,7 +969,7 @@ class getopts(context):
         self.getopts = {}
         self.getoptL = []
         self.getoptLs = ''
-        for (name, spec) in getopts.items():
+        for (name, spec) in list(getopts.items()):
             if spec == '':
                 if len(name) == 1:
                     self.getoptLs += name
@@ -1028,7 +1029,7 @@ class State(object):
 
     def essence(self):
         st = State(self.types)
-        for (attr, value) in self.__dict__.items():
+        for (attr, value) in list(self.__dict__.items()):
             if attr not in ('args', 'kwargs'):
                 setattr(st, attr, value)
         return st
@@ -1094,7 +1095,7 @@ def _wrap(f, specList=[], name=None, checkDoc=True, **kw):
     return internationalizeDocstring(newf2)
 
 def wrap(f, *args, **kwargs):
-    if callable(f):
+    if isinstance(f, collections.Callable):
         # Old-style call OR decorator syntax with no converter.
         # f is the command.
         return _wrap(f, *args, **kwargs)

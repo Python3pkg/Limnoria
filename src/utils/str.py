@@ -43,6 +43,7 @@ from .iter import any
 from .structures import TwoWayDictionary
 
 from . import internationalization as _
+import collections
 internationalizeFunction = _.internationalizeFunction
 
 try:
@@ -136,8 +137,8 @@ class MultipleReplacer:
     # it to a class in Python 3.
     def __init__(self, dict_):
         self._dict = dict_
-        dict_ = dict([(re.escape(key), val) for key,val in dict_.items()])
-        self._matcher = re.compile('|'.join(dict_.keys()))
+        dict_ = dict([(re.escape(key), val) for key,val in list(dict_.items())])
+        self._matcher = re.compile('|'.join(list(dict_.keys())))
     def __call__(self, s):
         return self._matcher.sub(lambda m: self._dict[m.group(0)], s)
 def multipleReplacer(dict_):
@@ -182,7 +183,7 @@ def dqrepr(s):
     # The wankers-that-be decided not to use double-quotes anymore in 2.3.
     # return '"' + repr("'\x00" + s)[6:]
     encoding = 'string_escape' if minisix.PY2 else 'unicode_escape'
-    if minisix.PY2 and isinstance(s, unicode):
+    if minisix.PY2 and isinstance(s, str):
         s = s.encode('utf8', 'replace')
     return '"%s"' % s.encode(encoding).decode().replace('"', '\\"')
 
@@ -291,7 +292,7 @@ def perlVariableSubstitute(vars, text):
         var = braced or unbraced
         try:
             x = vars[var]
-            if callable(x):
+            if isinstance(x, collections.Callable):
                 return x()
             else:
                 try:
@@ -512,11 +513,11 @@ def format(s, *args, **kwargs):
     # Of course, you should also document it in the docstring above.
     if minisix.PY2:
         def pred(s):
-            if isinstance(s, unicode):
+            if isinstance(s, str):
                 return s.encode('utf8')
             else:
                 return s
-        args = map(pred, args)
+        args = list(map(pred, args))
     args = list(args)
     args.reverse() # For more efficient popping.
     def sub(match):
@@ -525,7 +526,7 @@ def format(s, *args, **kwargs):
             token = args.pop()
             if isinstance(token, str):
                 return token
-            elif minisix.PY2 and isinstance(token, unicode):
+            elif minisix.PY2 and isinstance(token, str):
                 return token.encode('utf8', 'replace')
             else:
                 return str(token)

@@ -98,8 +98,8 @@ class StdoutStreamHandler(logging.StreamHandler):
             # already wrapped by Python itself) wrap oddly.
             if not isinstance(record.levelname, minisix.string_types):
                 print(record)
-                print(record.levelname)
-                print(utils.stackTrace())
+                print((record.levelname))
+                print((utils.stackTrace()))
             prefixLen = len(record.levelname) + 1 # ' '
             s = textwrap.fill(s, width=78, subsequent_indent=' '*prefixLen)
             s.rstrip('\r\n')
@@ -380,7 +380,7 @@ class MetaFirewall(type):
             if hasattr(base, '__firewalled__'):
                 cls.updateFirewalled(firewalled, base.__firewalled__)
         cls.updateFirewalled(firewalled, classdict.get('__firewalled__', []))
-        for (attr, errorHandler) in firewalled.items():
+        for (attr, errorHandler) in list(firewalled.items()):
             if attr in classdict:
                 classdict[attr] = firewall(classdict[attr], errorHandler)
         return super(MetaFirewall, cls).__new__(cls, name, bases, classdict)

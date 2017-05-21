@@ -55,7 +55,7 @@ from supybot.i18n import PluginInternationalization, internationalizeDocstring
 _ = PluginInternationalization('Misc')
 
 if minisix.PY2:
-    from itertools import ifilter as filter
+    
 
 def get_suffix(file):
     for suffix in imp.get_suffixes():
@@ -271,7 +271,7 @@ class Misc(callbacks.Plugin):
                 for command in cb.listCommands():
                     if s in command:
                         commands.setdefault(command, []).append(cb.name())
-        for (key, names) in commands.items():
+        for (key, names) in list(commands.items()):
             for name in names:
                 L.append('%s %s' % (name, key))
         if L:
@@ -314,7 +314,7 @@ class Misc(callbacks.Plugin):
                        if self.isPublic(cb)]
             s = format(_('There is no command %q.'),
                         callbacks.formatCommand(command))
-            if command[0].lower() in map(str.lower, plugins):
+            if command[0].lower() in list(map(str.lower, plugins)):
                 s += (' However, "{0}" is the name of a loaded plugin, and '
                     'you may be able to find its provided commands '
                     'using \'list {0}\'.'.format(command[0].title()))
@@ -337,12 +337,12 @@ class Misc(callbacks.Plugin):
                 version = data['commit']['committer']['date']
                 # Strip the last 'Z':
                 version = version.rsplit('T', 1)[0].replace('-', '.')
-                if minisix.PY2 and isinstance(version, unicode):
+                if minisix.PY2 and isinstance(version, str):
                     version = version.encode('utf8')
                 versions[branch] = version
             newest = _('The newest versions available online are %s.') % \
                     ', '.join([_('%s (in %s)') % (y,x)
-                               for x,y in versions.items()])
+                               for x,y in list(versions.items())])
         except utils.web.Error as e:
             self.log.info('Couldn\'t get website version: %s', e)
             newest = _('I couldn\'t fetch the newest version '
@@ -469,12 +469,12 @@ class Misc(callbacks.Plugin):
                 predicates.setdefault('regexp', []).append(f)
             elif option == 'nolimit':
                 nolimit = True
-        iterable = filter(self._validLastMsg, reversed(irc.state.history))
+        iterable = list(filter(self._validLastMsg, reversed(irc.state.history)))
         if skipfirst:
             # Drop the first message only if our current channel is the same as
             # the channel we've been instructed to look at.
             next(iterable)
-        predicates = list(utils.iter.flatten(predicates.values()))
+        predicates = list(utils.iter.flatten(list(predicates.values())))
         # Make sure the user can't get messages from channels they aren't in
         def userInChannel(m):
             return m.args[0] in irc.state.channels \

@@ -29,7 +29,7 @@
 
 """Restricted equivalent to six."""
 
-from __future__ import division
+
 
 import sys
 import warnings
@@ -69,21 +69,21 @@ else:
         intern = __builtins__['intern']
     else:
         intern = __builtins__.intern
-    integer_types = (int, long)
-    string_types = (basestring,)
-    long = long
+    integer_types = (int, int)
+    string_types = (str,)
+    long = int
 
     class io:
         # cStringIO is buggy with Python 2.6 (
         # see http://paste.progval.net/show/227/ )
         # and it does not handle unicode objects in Python  2.x
-        from StringIO import StringIO
-        from cStringIO import StringIO as BytesIO
-    import cPickle as pickle
-    import Queue as queue
+        from io import StringIO
+        from io import StringIO as BytesIO
+    import pickle as pickle
+    import queue as queue
 
     u = lambda x:x.decode('utf8')
-    L = lambda x:long(x)
+    L = lambda x:int(x)
 
     def make_datetime_utc(dt):
         warnings.warn('Timezones are not available on this version of '

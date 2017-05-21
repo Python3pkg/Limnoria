@@ -48,7 +48,7 @@ try:
 except ImportError: # Python 2.6
     def skipIf(cond, reason):
         if cond:
-            print('Skipped: %s' % reason)
+            print(('Skipped: %s' % reason))
             def decorator(f):
                 return None
         else:

@@ -156,7 +156,7 @@ class Connection:
         # generate net traffic with this request!
 
         if dbname != '*' and dbname != '!' and \
-               not dbname in self.dbdescs.keys():
+               not dbname in list(self.dbdescs.keys()):
             raise Exception("Invalid database name '%s'" % dbname)
 
         self.dbobjs[dbname] = Database(self, dbname)
@@ -216,10 +216,10 @@ class Connection:
         has a match."""
         self.getstratdescs()            # Prime the cache
         self.getdbdescs()               # Prime the cache
-        if not strategy in self.getstratdescs().keys():
+        if not strategy in list(self.getstratdescs().keys()):
             raise Exception("Invalid strategy '%s'" % strategy)
         if database != '*' and database != '!' and \
-               not database in self.getdbdescs().keys():
+               not database in list(self.getdbdescs().keys()):
             raise Exception("Invalid database name '%s'" % database)
 
         self.sendcommand("MATCH %s %s %s" % (enquote(database),

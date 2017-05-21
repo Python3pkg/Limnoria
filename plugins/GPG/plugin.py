@@ -47,7 +47,7 @@ import supybot.callbacks as callbacks
 if minisix.PY3:
     import http.client as http_client
 else:
-    import httplib as http_client
+    import http.client as http_client
 try:
     from supybot.i18n import PluginInternationalization
     _ = PluginInternationalization('GPG')
@@ -157,8 +157,7 @@ class GPG(callbacks.Plugin):
 
         def _expire_tokens(self):
             now = time.time()
-            self._tokens = dict(filter(lambda x_y: x_y[1][1]>now,
-                self._tokens.items()))
+            self._tokens = dict([x_y for x_y in list(self._tokens.items()) if x_y[1][1]>now])
 
         @check_gpg_available
         def gettoken(self, irc, msg, args):
@@ -208,7 +207,7 @@ class GPG(callbacks.Plugin):
                 keyid = verified.pubkey_fingerprint[-16:]
                 prefix, expiry = self._tokens.pop(token)
                 found = False
-                for (id, user) in ircdb.users.items():
+                for (id, user) in list(ircdb.users.items()):
                     if keyid in [x[-len(keyid):] for x in user.gpgkeys]:
                         try:
                             user.addAuth(msg.prefix)

@@ -44,7 +44,7 @@ from supybot.i18n import PluginInternationalization
 _ = PluginInternationalization()
 
 if minisix.PY2:
-    from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+    from http.server import HTTPServer, BaseHTTPRequestHandler
 else:
     from http.server import HTTPServer, BaseHTTPRequestHandler
 
@@ -144,7 +144,7 @@ body.error p {
     }
 
 def set_default_templates(defaults):
-    for filename, content in defaults.items():
+    for filename, content in list(defaults.items()):
         path = conf.supybot.directories.data.web.dirize(filename)
         if os.path.isfile(path + '.example'):
             os.unlink(path + '.example')
@@ -354,7 +354,7 @@ class SupyIndex(SupyHTTPServerCallback):
     fullpath = True
     defaultResponse = _("Request not handled.")
     def doGetOrHead(self, handler, path, write_content):
-        plugins = [x for x in handler.server.callbacks.items()]
+        plugins = [x for x in list(handler.server.callbacks.items())]
         if plugins == []:
             plugins = _('No plugins available.')
         else:

@@ -64,7 +64,7 @@ class Later(callbacks.Plugin):
     def _flushNotes(self):
         fd = utils.file.AtomicFile(self.filename)
         writer = csv.writer(fd)
-        for (nick, notes) in self._notes.items():
+        for (nick, notes) in list(self._notes.items()):
             for (time, whence, text) in notes:
                 writer.writerow([nick, time, whence, text])
         fd.close()
@@ -128,7 +128,7 @@ class Later(callbacks.Plugin):
         expiry = self.registryValue('messageExpiry')
         curtime = time.time()
         nickremovals=[]
-        for (nick, notes) in self._notes.items():
+        for (nick, notes) in list(self._notes.items()):
             removals = []
             for (notetime, whence, text) in notes:
                 td = datetime.timedelta(seconds=(curtime - notetime))
@@ -198,7 +198,7 @@ class Later(callbacks.Plugin):
             else:
                 irc.error(_('I have no notes for that nick.'))
         else:
-            nicks = self._notes.keys()
+            nicks = list(self._notes.keys())
             if nicks:
                 utils.sortBy(ircutils.toLower, nicks)
                 irc.reply(format(_('I currently have notes waiting for %L.'),

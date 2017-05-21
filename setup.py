@@ -45,7 +45,7 @@ debug = '--debug' in sys.argv
 
 path = os.path.dirname(__file__)
 if debug:
-    print('DEBUG: Changing dir from %r to %r' % (os.getcwd(), path))
+    print(('DEBUG: Changing dir from %r to %r' % (os.getcwd(), path)))
 if path:
     os.chdir(path)
 
@@ -140,7 +140,7 @@ if clean:
             print('Removing current installation.')
             shutil.rmtree(previousInstall)
         except Exception as e:
-            print('Couldn\'t remove former installation: %s' % e)
+            print(('Couldn\'t remove former installation: %s' % e))
             sys.exit(-1)
 
 packages = ['supybot',

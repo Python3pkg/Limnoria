@@ -74,7 +74,7 @@ class SqliteQuoteGrabsDB(object):
         self.filename = filename
 
     def close(self):
-        for db in self.dbs.values():
+        for db in list(self.dbs.values()):
             db.close()
 
     def _getDb(self, channel):

@@ -28,7 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 ###
 
-from __future__ import unicode_literals
+
 
 import re
 import sys
@@ -157,9 +157,9 @@ class Filter(callbacks.Plugin):
             else:
                 bytes_ = text
         else:
-            if isinstance(text, unicode):
+            if isinstance(text, str):
                 text = text.encode()
-            bytes_ = map(ord, text)
+            bytes_ = list(map(ord, text))
         for i in bytes_:
             LL = []
             assert i<=256
@@ -339,7 +339,7 @@ class Filter(callbacks.Plugin):
         "@" : ".--.-.",
         "=" : "-...-"
     }
-    _revMorseCode = dict([(y, x) for (x, y) in _morseCode.items()])
+    _revMorseCode = dict([(y, x) for (x, y) in list(_morseCode.items())])
     _unmorsere = re.compile('([.-]+)')
     @internationalizeDocstring
     def unmorse(self, irc, msg, args, text):
@@ -520,7 +520,7 @@ class Filter(callbacks.Plugin):
             r'\blike\b': 'liek',
             r'[^e]ing\b': 'eing',
             }
-        for (r, s) in alwaysInsertions.items():
+        for (r, s) in list(alwaysInsertions.items()):
             text = re.sub(r, s, text)
         randomInsertions = {
             r'i': 'ui',
@@ -538,7 +538,7 @@ class Filter(callbacks.Plugin):
             r'\btheir\b': 'there',
             r'[^e]y': 'ey',
             }
-        for (r, s) in randomInsertions.items():
+        for (r, s) in list(randomInsertions.items()):
             text = re.sub(r, randomlyReplace(s), text)
         text = re.sub(r'(\w)\'(\w)', quoteOrNothing, text)
         text = re.sub(r'\.(\s+|$)', randomExclaims, text)

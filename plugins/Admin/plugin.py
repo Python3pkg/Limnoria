@@ -179,7 +179,7 @@ class Admin(callbacks.Plugin):
 
         Returns the channels the bot is on.
         """
-        L = irc.state.channels.keys()
+        L = list(irc.state.channels.keys())
         if L:
             utils.sortBy(ircutils.toLower, L)
             irc.reply(format('%L', L), private=True)

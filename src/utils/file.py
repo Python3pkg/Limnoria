@@ -105,7 +105,7 @@ def nonCommentLines(fd):
             yield line
 
 def nonEmptyLines(fd):
-    return filter(str.strip, fd)
+    return list(filter(str.strip, fd))
 
 def nonCommentNonEmptyLines(fd):
     return nonEmptyLines(nonCommentLines(fd))

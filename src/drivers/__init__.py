@@ -32,7 +32,7 @@
 Contains various drivers (network, file, and otherwise) for using IRC objects.
 """
 
-import socket
+from . import socket
 
 from .. import conf, ircmsgs, log as supylog, utils
 from ..utils import minisix
@@ -98,7 +98,7 @@ def remove(name):
 
 def run():
     """Runs the whole driver loop."""
-    for (name, driver) in _drivers.items():
+    for (name, driver) in list(_drivers.items()):
         try:
             if name not in _deadDrivers:
                 driver.run()

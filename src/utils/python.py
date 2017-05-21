@@ -61,7 +61,7 @@ def changeFunctionName(f, name, doc=None):
         closure = f.__closure__
     else:
         # Pypy
-        closure = f.func_closure
+        closure = f.__closure__
     newf = types.FunctionType(f.__code__, f.__globals__, name,
                               f.__defaults__, closure)
     newf.__doc__ = doc
@@ -161,9 +161,9 @@ def collect_extra_debug_data():
             if inspected in frame_locals:
                 if hasattr(frame_locals[inspected], '__dict__') and \
                         frame_locals[inspected].__dict__:
-                    for (key, value) in frame_locals[inspected].__dict__.items():
+                    for (key, value) in list(frame_locals[inspected].__dict__.items()):
                         frame_locals['%s.%s' % (inspected, key)] = value
-        for key, value in frame_locals.items():
+        for key, value in list(frame_locals.items()):
             if key == '__builtins__':
                 # This is flooding
                 continue

@@ -31,7 +31,7 @@
 import gc
 import os
 import csv
-import time
+from . import time
 import codecs
 import fnmatch
 import os.path
@@ -70,7 +70,7 @@ def DB(filename, types):
                 return types[type](fn, *args, **kwargs)
             except KeyError:
                 continue
-        raise NoSuitableDatabase(types.keys())
+        raise NoSuitableDatabase(list(types.keys()))
     return MakeDB
 
 def makeChannelFilename(filename, channel=None, dirname=None):
@@ -129,7 +129,7 @@ class ChannelDBHandler(object):
         return db
 
     def die(self):
-        for db in self.dbCache.values():
+        for db in list(self.dbCache.values()):
             try:
                 db.commit()
             except AttributeError: # In case it's not an SQLite database.
@@ -159,11 +159,11 @@ class DbiChannelDB(object):
         return db
 
     def close(self):
-        for db in self.dbs.values():
+        for db in list(self.dbs.values()):
             db.close()
 
     def flush(self):
-        for db in self.dbs.values():
+        for db in list(self.dbs.values()):
             db.flush()
 
     def __getattr__(self, attr):
@@ -193,8 +193,8 @@ class ChannelUserDictionary(collections.MutableMapping):
         del self.channels[channel][id]
 
     def __iter__(self):
-        for channel, ids in self.channels.items():
-            for id_, value in ids.items():
+        for channel, ids in list(self.channels.items()):
+            for id_, value in list(ids.items()):
                 yield (channel, id_)
         raise StopIteration()
 
@@ -202,13 +202,13 @@ class ChannelUserDictionary(collections.MutableMapping):
         return sum([len(x) for x in self.channels])
 
     def items(self):
-        for (channel, ids) in self.channels.items():
-            for (id, v) in ids.items():
+        for (channel, ids) in list(self.channels.items()):
+            for (id, v) in list(ids.items()):
                 yield ((channel, id), v)
 
     def keys(self):
         L = []
-        for (k, _) in self.items():
+        for (k, _) in list(self.items()):
             L.append(k)
         return L
 

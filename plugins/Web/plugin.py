@@ -48,9 +48,9 @@ if minisix.PY3:
     from html.entities import entitydefs
     import http.client as http_client
 else:
-    from HTMLParser import HTMLParser
-    from htmlentitydefs import entitydefs
-    import httplib as http_client
+    from html.parser import HTMLParser
+    from html.entities import entitydefs
+    import http.client as http_client
 
 class Title(utils.web.HtmlToText):
     entitydefs = entitydefs.copy()
@@ -234,7 +234,7 @@ class Web(callbacks.PluginRegexp):
         fd = utils.web.getUrlFd(url, timeout=timeout)
         try:
             s = ', '.join([format(_('%s: %s'), k, v)
-                           for (k, v) in fd.headers.items()])
+                           for (k, v) in list(fd.headers.items())])
             irc.reply(s)
         finally:
             fd.close()

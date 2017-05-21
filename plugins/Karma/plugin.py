@@ -51,7 +51,7 @@ class SqliteKarmaDB(object):
         self.filename = filename
 
     def close(self):
-        for db in self.dbs.values():
+        for db in list(self.dbs.values()):
             db.close()
 
     def _getDb(self, channel):
@@ -253,8 +253,8 @@ class Karma(callbacks.Plugin):
             if thing.endswith(s):
                 thing = thing[:-len(s)]
                 # Don't reply if the target isn't a nick
-                if onlynicks and thing.lower() not in map(ircutils.toLower,
-                        irc.state.channels[channel].users):
+                if onlynicks and thing.lower() not in list(map(ircutils.toLower,
+                        irc.state.channels[channel].users)):
                     return
                 if ircutils.strEqual(thing, msg.nick) and \
                     not self.registryValue('allowSelfRating', channel):
@@ -265,8 +265,8 @@ class Karma(callbacks.Plugin):
         for s in dec:
             if thing.endswith(s):
                 thing = thing[:-len(s)]
-                if onlynicks and thing.lower() not in map(ircutils.toLower,
-                        irc.state.channels[channel].users):
+                if onlynicks and thing.lower() not in list(map(ircutils.toLower,
+                        irc.state.channels[channel].users)):
                     return
                 if ircutils.strEqual(thing, msg.nick) and \
                     not self.registryValue('allowSelfRating', channel):

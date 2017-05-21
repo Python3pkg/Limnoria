@@ -75,7 +75,7 @@ class GithubRepository(GitRepository):
 
     _apiUrl = 'https://api.github.com'
     def _query(self, type_, uri_end, args={}):
-        args = dict([(x,y) for x,y in args.items() if y is not None])
+        args = dict([(x,y) for x,y in list(args.items()) if y is not None])
         url = '%s/%s/%s?%s' % (self._apiUrl, type_, uri_end,
                                utils.web.urlencode(args))
         return json.loads(utils.web.getUrl(url).decode('utf8'))
@@ -151,8 +151,7 @@ class GithubRepository(GitRepository):
                                 fd.write(line)
                     if newFileName.endswith('__init__.py'):
                         with open(newFileName) as fd:
-                            lines = list(filter(lambda x:'import plugin' in x,
-                                fd.readlines()))
+                            lines = list([x for x in fd.readlines() if 'import plugin' in x])
                             if lines and lines[0].startswith('from . import'):
                                 # This should be already Python 3-compatible
                                 run_2to3 = False

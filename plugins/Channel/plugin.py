@@ -549,7 +549,7 @@ class Channel(callbacks.Plugin):
             Returns the channels in which this bot is lobotomized.
             """
             L = []
-            for (channel, c) in ircdb.channels.items():
+            for (channel, c) in list(ircdb.channels.items()):
                 if c.lobotomized:
                     chancap = ircdb.makeChannelCapability(channel, 'op')
                     if ircdb.checkCapability(msg.prefix, 'admin') or \
@@ -835,7 +835,7 @@ class Channel(callbacks.Plugin):
                                      'called %s.'), plugin.name(), command)
         elif command:
             # findCallbackForCommand
-            if list(filter(None, irc.findCallbacksForArgs([command]))):
+            if list([_f for _f in irc.findCallbacksForArgs([command]) if _f]):
                 s = '-%s' % command
             else:
                 failMsg = format(_('No plugin or command named %s could be '
@@ -874,7 +874,7 @@ class Channel(callbacks.Plugin):
                                      'called %s.'), plugin.name(), command)
         elif command:
             # findCallbackForCommand
-            if list(filter(None, irc.findCallbacksForArgs([command]))):
+            if list([_f for _f in irc.findCallbacksForArgs([command]) if _f]):
                 s = '-%s' % command
             else:
                 failMsg = format(_('No plugin or command named %s could be '

@@ -246,7 +246,7 @@ class Alias(callbacks.Plugin):
         group = conf.supybot.plugins.Alias.aliases
         group2 = conf.supybot.plugins.Alias.escapedaliases
         prefixLen = len(registry.split('supybot.plugins.alias.aliases'))
-        for (name, alias) in registry._cache.items():
+        for (name, alias) in list(registry._cache.items()):
             name = name.lower()
             nameSplit = registry.split(name)
             if len(nameSplit) > prefixLen+1:
@@ -272,7 +272,7 @@ class Alias(callbacks.Plugin):
             command = value()
             locked = value.locked()
             self.aliases[unescapeAlias(name)] = [command, locked, None]
-        for (alias, (command, locked, _)) in self.aliases.copy().items():
+        for (alias, (command, locked, _)) in list(self.aliases.copy().items()):
             try:
                 self.addAlias(irc, alias, command, locked)
             except Exception as e:
@@ -290,7 +290,7 @@ class Alias(callbacks.Plugin):
             return True
 
     def listCommands(self):
-        return self.__parent.listCommands(self.aliases.keys())
+        return self.__parent.listCommands(list(self.aliases.keys()))
 
     def getCommandMethod(self, command):
         try:
@@ -448,7 +448,7 @@ class Alias(callbacks.Plugin):
             irc.error(_('Cannot specify --locked and --unlocked simultaneously'))
             return
         aliases = []
-        for name in self.aliases.keys():
+        for name in list(self.aliases.keys()):
             if self.isCommandMethod(name):
                 if 'locked' in optlist:
                     if self.aliases[name][1]: aliases.append(name)

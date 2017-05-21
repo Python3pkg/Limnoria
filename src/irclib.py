@@ -624,7 +624,7 @@ class IrcState(IrcCommandDispatcher, log.Firewalled):
 
     def doQuit(self, irc, msg):
         channel_names = ircutils.IrcSet()
-        for (name, channel) in self.channels.items():
+        for (name, channel) in list(self.channels.items()):
             if msg.nick in channel.users:
                 channel_names.add(name)
                 channel.removeUser(msg.nick)
@@ -660,7 +660,7 @@ class IrcState(IrcCommandDispatcher, log.Firewalled):
         except KeyError:
             pass
         channel_names = ircutils.IrcSet()
-        for (name, channel) in self.channels.items():
+        for (name, channel) in list(self.channels.items()):
             if msg.nick in channel.users:
                 channel_names.add(name)
             channel.replaceUser(oldNick, newNick)
@@ -681,7 +681,7 @@ class IrcState(IrcCommandDispatcher, log.Firewalled):
 
     def doAway(self, irc, msg):
         channel_names = ircutils.IrcSet()
-        for (name, channel) in self.channels.items():
+        for (name, channel) in list(self.channels.items()):
             if msg.nick in channel.users:
                 channel_names.add(name)
         msg.tag('channels', channel_names)

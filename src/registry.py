@@ -42,11 +42,11 @@ _ = i18n.PluginInternationalization()
 
 def error(s):
    """Replace me with something better from another module!"""
-   print('***', s)
+   print(('***', s))
 
 def exception(s):
     """Ditto!"""
-    print('***', s, 'A bad exception.')
+    print(('***', s, 'A bad exception.'))
 
 class RegistryException(Exception):
     pass
@@ -255,7 +255,7 @@ class Group(object):
             #print '***>', _cache[name]
             self.set(_cache[name])
         if self._supplyDefault:
-            for (k, v) in _cache.items():
+            for (k, v) in list(_cache.items()):
                 if k.startswith(self._name):
                     rest = k[len(self._name)+1:] # +1 is for .
                     parts = split(rest)

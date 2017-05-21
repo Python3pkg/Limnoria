@@ -124,7 +124,7 @@ class RingBuffer(object):
         if self.full:
             oidx = idx
             if isinstance(oidx, slice):
-                range_ = range(*slice.indices(oidx, len(self)))
+                range_ = list(range(*slice.indices(oidx, len(self))))
                 if len(range_) != len(elt):
                     raise ValueError('seq must be the same length as slice.')
                 else:
@@ -138,7 +138,7 @@ class RingBuffer(object):
                 self.L[idx] = elt
         else:
             if isinstance(idx, slice):
-                range_ = range(*slice.indices(idx, len(self)))
+                range_ = list(range(*slice.indices(idx, len(self))))
                 if len(range_) != len(elt):
                     raise ValueError('seq must be the same length as slice.')
                 else:
@@ -245,7 +245,7 @@ class queue(object):
         if len(self) == 0:
             raise IndexError('queue index out of range')
         if isinstance(oidx, slice):
-            range_ = range(*slice.indices(oidx, len(self)))
+            range_ = list(range(*slice.indices(oidx, len(self))))
             if len(range_) != len(value):
                 raise ValueError('seq must be the same length as slice.')
             else:
@@ -266,7 +266,7 @@ class queue(object):
 
     def __delitem__(self, oidx):
         if isinstance(oidx, slice):
-            range_ = range(*slice.indices(oidx, len(self)))
+            range_ = list(range(*slice.indices(oidx, len(self))))
             for i in range_:
                 del self[i]
         else:
@@ -322,7 +322,7 @@ class TimeoutQueue(object):
                                              self.timeout, self.queue)
 
     def _getTimeout(self):
-        if callable(self.timeout):
+        if isinstance(self.timeout, collections.Callable):
             return self.timeout()
         else:
             return self.timeout
@@ -382,13 +382,13 @@ class TwoWayDictionary(dict):
     __slots__ = ()
     def __init__(self, seq=(), **kwargs):
         if hasattr(seq, 'iteritems'):
-            seq = seq.iteritems()
+            seq = iter(seq.items())
         elif hasattr(seq, 'items'):
-            seq = seq.items()
+            seq = list(seq.items())
         for (key, value) in seq:
             self[key] = value
             self[value] = key
-        for (key, value) in kwargs.items():
+        for (key, value) in list(kwargs.items()):
             self[key] = value
             self[value] = key
 
@@ -445,10 +445,10 @@ class CacheDict(collections.MutableMapping):
         del self.d[key]
 
     def keys(self):
-        return self.d.keys()
+        return list(self.d.keys())
     
     def items(self):
-        return self.d.items()
+        return list(self.d.items())
 
     def __iter__(self):
         return iter(self.d)

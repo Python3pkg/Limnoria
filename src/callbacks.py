@@ -143,7 +143,7 @@ def canonicalName(command, preserve_spaces=False):
     Currently, this makes everything lowercase and removes all dashes and
     underscores.
     """
-    if minisix.PY2 and isinstance(command, unicode):
+    if minisix.PY2 and isinstance(command, str):
         command = command.encode('utf-8')
     elif minisix.PY3 and isinstance(command, bytes):
         command = command.decode()

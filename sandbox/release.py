@@ -79,23 +79,23 @@ if __name__ == '__main__':
         error('I need to make the directory "supybot" but it already exists.'
               '  Change to an appropriate directory or remove the supybot '
               'directory to continue.')
-    print 'Checking out fresh tree from git.'
+    print('Checking out fresh tree from git.')
     repo = 'git+ssh://%s@supybot.git.sourceforge.net/gitroot/supybot/supybot' % u
     system(['git', 'clone', '-b', branch, repo])
     os.chdir('supybot')
 
-    print 'Checking RELNOTES version line.'
+    print('Checking RELNOTES version line.')
     if firstLine('RELNOTES') != 'Version %s' % v:
         error('Invalid first line in RELNOTES.')
 
-    print 'Checking ChangeLog version line.'
+    print('Checking ChangeLog version line.')
     (first, _, third) = firstLines('ChangeLog', 3)
     if not re.match(r'^20\d\d-\d{2}-\d{2}\s+\w+.*<\S+@\S+>$', first):
         error('Invalid first line in ChangeLog.')
     if not re.match(r'^\t\* Version %s!$' % v, third):
         error('Invalid third line in ChangeLog.')
 
-    print 'Updating version in version files.'
+    print('Updating version in version files.')
     versionFiles = ['src/version.py']
     for fn in versionFiles:
         sh = ['perl', '-pi', '-e', 's/^version\s*=.*/version = \'%s\'/' % v, fn]
@@ -105,13 +105,13 @@ if __name__ == '__main__':
         commit.append('-s')
     system(commit + ['-m', 'Updated to %s.' % v] + versionFiles)
 
-    print 'Tagging release.'
+    print('Tagging release.')
     tag = ['git', 'tag']
     if sign:
         tag.append('-s')
     system(tag + ['-m', "Release %s" % v, 'v%s' % v])
 
-    print 'Committing %s+git to version files.' % v
+    print('Committing %s+git to version files.' % v)
     for fn in versionFiles:
         system(['perl', '-pi', '-e',
                 's/^version\s*=.*/version = \'%s+git\'/' % v, fn],
@@ -119,22 +119,22 @@ if __name__ == '__main__':
     system(commit + ['-m', 'Updated to %s+git.' % v] + versionFiles)
 
     if not dryrun:
-        print 'Pushing commits and tag.'
+        print('Pushing commits and tag.')
         system(['git', 'push', 'origin', branch])
         system(['git', 'push', '--tags'])
 
     archive = ['git', 'archive', '--prefix=Supybot-%s/' % v]
-    print 'Creating tarball (gzip).'
+    print('Creating tarball (gzip).')
     system(archive + ['-o', '../Supybot-%s.tar.gz' % v,
                       '--format=tgz', 'v%s' % v])
 
     system(['git', 'config', 'tar.bz2.command', 'bzip2 -c'])
 
-    print 'Creating tarball (bzip2).'
+    print('Creating tarball (bzip2).')
     system(archive + ['-o', '../Supybot-%s.tar.bz2' % v,
                       '--format=bz2', 'v%s' % v])
 
-    print 'Creating zip.'
+    print('Creating zip.')
     system(archive + ['-o', '../Supybot-%s.zip' % v,
                       '--format=zip', 'v%s' % v])
 
@@ -142,14 +142,14 @@ if __name__ == '__main__':
     shutil.rmtree('supybot')
 
     if not dryrun:
-        print 'Uploading package files to upload.sf.net.'
+        print('Uploading package files to upload.sf.net.')
         system('scp Supybot-%s.tar.gz Supybot-%s.tar.bz2 Supybot-%s.zip '
                '%s@frs.sourceforge.net:uploads' % (v, v, v, u))
         os.unlink('Supybot-%s.tar.gz' % v)
         os.unlink('Supybot-%s.tar.bz2' % v)
         os.unlink('Supybot-%s.zip' % v)
 
-        print 'Copying new version.txt over to project webserver.'
+        print('Copying new version.txt over to project webserver.')
         system('echo %s > version.txt' % v)
         system('scp version.txt %s@web.sf.net:/home/groups/s/su/supybot/htdocs'
                %u)

@@ -91,9 +91,9 @@ class GeneralContextTestCase(CommandsTestCase):
 
     if minisix.PY2:
         def testSpecLong(self):
-            self.assertState(['long'], ['1'], [long(1)])
+            self.assertState(['long'], ['1'], [int(1)])
             self.assertState(['long', 'long', 'long'], ['1', '2', '3'],
-                             [long(1), long(2), long(3)])
+                             [int(1), int(2), int(3)])
 
     def testRestHandling(self):
         self.assertState([rest(None)], ['foo', 'bar', 'baz'], ['foo bar baz'])

@@ -32,13 +32,13 @@
 Contains simple socket drivers.  Asyncore bugged (haha, pun!) me.
 """
 
-from __future__ import division
+
 
 import os
 import time
 import errno
 import select
-import socket
+from . import socket
 
 from .. import (conf, drivers, log, utils, world)
 from ..utils import minisix

@@ -59,7 +59,7 @@ class Internet(callbacks.Plugin):
         else:
             try:
                 ips = socket.getaddrinfo(host, None)
-                ips = map(lambda x:x[4][0], ips)
+                ips = [x[4][0] for x in ips]
                 ordered_unique_ips = []
                 unique_ips = set()
                 for ip in ips:
@@ -179,7 +179,7 @@ class Internet(callbacks.Plugin):
         if (server or netrange) and status:
             entity = server or 'Net range %s%s' % \
                     (netrange, ' (%s)' % netname if netname else '')
-            info = filter(None, [status, created, updated, expires])
+            info = [_f for _f in [status, created, updated, expires] if _f]
             s = format(_('%s%s is %L.'), entity, url, info)
             irc.reply(s)
         else:

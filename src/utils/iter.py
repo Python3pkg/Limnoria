@@ -27,7 +27,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 ###
 
-from __future__ import division
+
 
 import random
 
@@ -40,7 +40,7 @@ ifilter = filter
 def filterfalse(p, L):
     if p is None:
         p = lambda x:x
-    return filter(lambda x:not p(x), L)
+    return [x for x in L if not p(x)]
 ifilterfalse = filterfalse
 imap = map
 

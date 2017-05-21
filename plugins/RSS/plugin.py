@@ -53,7 +53,7 @@ from supybot.i18n import PluginInternationalization, internationalizeDocstring
 _ = PluginInternationalization('RSS')
 
 if minisix.PY2:
-    from urllib2 import ProxyHandler
+    from urllib.request import ProxyHandler
 else:
     from urllib.request import ProxyHandler
 
@@ -158,7 +158,7 @@ def sort_feed_items(items, order):
 
 def load_announces_db(fd):
     return dict((name, utils.structures.TruncatableSet(entries))
-                for (name, entries) in json.load(fd).items())
+                for (name, entries) in list(json.load(fd).items()))
 def save_announces_db(db, fd):
     json.dump(dict((name, list(entries)) for (name, entries) in db), fd)
 
@@ -202,7 +202,7 @@ class RSS(callbacks.Plugin):
         self.__parent.die()
 
     def _flush(self):
-        l = [(f.name, f.announced_entries) for f in self.feeds.values()]
+        l = [(f.name, f.announced_entries) for f in list(self.feeds.values())]
         with utils.file.AtomicFile(announced_headlines_filename, 'w',
                                    backupDir='/dev/null') as fd:
             save_announces_db(l, fd)
@@ -261,7 +261,7 @@ class RSS(callbacks.Plugin):
             return True
 
     def listCommands(self):
-        return self.__parent.listCommands(self.feed_names.keys())
+        return self.__parent.listCommands(list(self.feed_names.keys()))
 
     def getCommandMethod(self, command):
         try:
@@ -546,11 +546,9 @@ class RSS(callbacks.Plugin):
             irc.error(_('Couldn\'t get RSS feed.'))
             return
         n = n or self.registryValue('defaultNumberOfHeadlines', channel)
-        entries = list(filter(lambda e:self.should_send_entry(channel, e),
-                              feed.entries))
+        entries = list([e for e in feed.entries if self.should_send_entry(channel, e)])
         entries = entries[:n]
-        headlines = map(lambda e:self.format_entry(channel, feed, e, False),
-                        entries)
+        headlines = [self.format_entry(channel, feed, e, False) for e in entries]
         sep = self.registryValue('headlineSeparator', channel)
         irc.replies(headlines, joiner=sep)
     rss = wrap(rss, [first('url', 'feedName'), additional('int')])

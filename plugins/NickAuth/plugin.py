@@ -158,7 +158,7 @@ class NickAuth(callbacks.Plugin):
         mynick, theirnick, theiraccount, garbage = msg.args
         # I would like to use a dict comprehension, but we have to support
         # Python 2.6 :(
-        self._requests = dict([(x,y) for x,y in self._requests.items()
+        self._requests = dict([(x,y) for x,y in list(self._requests.items())
                 if y[0]+60>time.time()])
         try:
             (timestamp, prefix, irc) = self._requests.pop((irc.network, theirnick))

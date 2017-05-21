@@ -28,7 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 ###
 
-from __future__ import unicode_literals
+
 
 from supybot.test import *
 
@@ -81,7 +81,7 @@ class FilterTest(ChannelPluginTestCase):
         self.assertResponse('unmorse [morse jemfinch]', 'JEMFINCH')
 
     def testReverse(self):
-        for s in map(str, range(1000, 1010)):
+        for s in map(str, list(range(1000, 1010))):
             self.assertResponse('reverse %s' % s, s[::-1])
 
     def testBinary(self):
@@ -93,14 +93,14 @@ class FilterTest(ChannelPluginTestCase):
         self.assertResponse('unbinary 01101101 01101111 01101111', 'moo')
 
     def testRot13(self):
-        for s in map(str, range(1000, 1010)):
+        for s in map(str, list(range(1000, 1010))):
             self.assertResponse('rot13 [rot13 %s]' % s, s)
 
     def testRot13HandlesNonAsciiStuff(self):
         self.assertNotError('rot13 é')
 
     def testHexlifyUnhexlify(self):
-        for s in map(str, range(1000, 1010)):
+        for s in map(str, list(range(1000, 1010))):
             self.assertResponse('unhexlify [hexlify %s]' % s, s)
         self.assertNotError('unhexlify ff')
 

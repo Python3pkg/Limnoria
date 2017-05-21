@@ -35,6 +35,7 @@ import operator
 
 from . import conf, ircutils, log, registry, unpreserve, utils, world
 from .utils import minisix
+import collections
 
 def isCapability(capability):
     return len(capability.split(None, 1)) == 1
@@ -96,7 +97,7 @@ def invertCapability(capability):
         return makeAntiCapability(capability)
 
 def canonicalCapability(capability):
-    if callable(capability):
+    if isinstance(capability, collections.Callable):
         capability = capability()
     assert isCapability(capability), 'got %s' % capability
     return capability.lower()
@@ -359,7 +360,7 @@ class IrcUser(object):
             write('capability %s' % capability)
         for hostmask in self.hostmasks:
             write('hostmask %s' % hostmask)
-        for network, nicks in self.nicks.items():
+        for network, nicks in list(self.nicks.items()):
             write('nicks %s %s' % (network, ' '.join(nicks)))
         for key in self.gpgkeys:
             write('gpgkey %s' % key)
@@ -675,7 +676,7 @@ class UsersDictionary(utils.IterableMap):
         self.users.clear()
 
     def items(self):
-        return self.users.items()
+        return list(self.users.items())
 
     def getUserId(self, s):
         """Returns the user ID of a given name or hostmask."""
@@ -684,7 +685,7 @@ class UsersDictionary(utils.IterableMap):
                 return self._hostmaskCache[s]
             except KeyError:
                 ids = {}
-                for (id, user) in self.users.items():
+                for (id, user) in list(self.users.items()):
                     x = user.checkHostmask(s)
                     if x:
                         ids[id] = x
@@ -701,7 +702,7 @@ class UsersDictionary(utils.IterableMap):
                 else:
                     log.error('Multiple matches found in user database.  '
                               'Removing the offending hostmasks.')
-                    for (id, hostmask) in ids.items():
+                    for (id, hostmask) in list(ids.items()):
                         log.error('Removing %q from user %s.', hostmask, id)
                         self.users[id].removeHostmask(hostmask)
                     raise DuplicateHostmask('Ids %r matched.' % ids)
@@ -710,7 +711,7 @@ class UsersDictionary(utils.IterableMap):
             try:
                 return self._nameCache[s]
             except KeyError:
-                for (id, user) in self.users.items():
+                for (id, user) in list(self.users.items()):
                     if s == user.name.lower():
                         self._nameCache[s] = id
                         self._nameCache[id] = s
@@ -732,7 +733,7 @@ class UsersDictionary(utils.IterableMap):
 
     def getUserFromNick(self, network, nick):
         """Return a user given its nick."""
-        for user in self.users.values():
+        for user in list(self.users.values()):
             try:
                 if nick in user.nicks[network]:
                     return user
@@ -779,7 +780,7 @@ class UsersDictionary(utils.IterableMap):
         except KeyError:
             pass
         for hostmask in user.hostmasks:
-            for (i, u) in self.items():
+            for (i, u) in list(self.items()):
                 if i == user.id:
                     continue
                 elif u.checkHostmask(hostmask):
@@ -849,7 +850,7 @@ class ChannelsDictionary(utils.IterableMap):
         if not self.noFlush:
             if self.filename is not None:
                 fd = utils.file.AtomicFile(self.filename)
-                for (channel, c) in self.channels.items():
+                for (channel, c) in list(self.channels.items()):
                     fd.write('channel %s' % channel)
                     fd.write(os.linesep)
                     c.preserve(fd, indent='  ')
@@ -893,7 +894,7 @@ class ChannelsDictionary(utils.IterableMap):
         self.flush()
 
     def items(self):
-        return self.channels.items()
+        return list(self.channels.items())
 
 
 class IgnoresDB(object):
@@ -922,7 +923,7 @@ class IgnoresDB(object):
         if self.filename is not None:
             fd = utils.file.AtomicFile(self.filename)
             now = time.time()
-            for (hostmask, expiration) in self.hostmasks.items():
+            for (hostmask, expiration) in list(self.hostmasks.items()):
                 if now < expiration or not expiration:
                     fd.write('%s %s' % (hostmask, expiration))
                     fd.write(os.linesep)

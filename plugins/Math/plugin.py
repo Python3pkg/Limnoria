@@ -28,7 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 ###
 
-from __future__ import division
+
 
 import re
 import math
@@ -41,6 +41,7 @@ from supybot.commands import *
 import supybot.utils.minisix as minisix
 import supybot.callbacks as callbacks
 from supybot.i18n import PluginInternationalization, internationalizeDocstring
+import collections
 _ = PluginInternationalization('Math')
 
 try:
@@ -121,7 +122,7 @@ class Math(callbacks.Plugin):
     _mathEnv['max'] = max
     _mathEnv['min'] = min
     _mathEnv['round'] = lambda x, y: round(x, int(y))
-    _mathSafeEnv = dict([(x,y) for x,y in _mathEnv.items()])
+    _mathSafeEnv = dict([(x,y) for x,y in list(_mathEnv.items())])
     _mathSafeEnv['factorial'] = _factorial
     _mathRe = re.compile(r'((?:(?<![A-Fa-f\d)])-)?'
                          r'(?:0x[A-Fa-f\d]+|'
@@ -291,7 +292,7 @@ class Math(callbacks.Plugin):
             except ValueError: # Not a float.
                 if arg in self._mathSafeEnv:
                     f = self._mathSafeEnv[arg]
-                    if callable(f):
+                    if isinstance(f, collections.Callable):
                         called = False
                         arguments = []
                         while not called and stack:

@@ -32,7 +32,7 @@ Database module, similar to dbhash.  Uses a format similar to (if not entirely
 the same as) DJB's CDB <http://cr.yp.to/cdb.html>.
 """
 
-from __future__ import division
+
 
 import os
 import sys
@@ -59,7 +59,7 @@ def pack2Ints(i, j):
 
 def dump(map, fd=sys.stdout):
     """Dumps a dictionary-structure in CDB format."""
-    for (key, value) in map.items():
+    for (key, value) in list(map.items()):
         fd.write('+%s,%s:%s->%s\n' % (len(key), len(value), key, value))
 
 def open_db(filename, mode='r', **kwargs):
@@ -334,7 +334,7 @@ class ReaderWriter(utils.IterableMap):
         if removals or adds:
             maker = Maker(self.filename)
             cdb = Reader(self.filename)
-            for (key, value) in cdb.items():
+            for (key, value) in list(cdb.items()):
                 if key in removals:
                     continue
                 elif key in adds:
@@ -344,7 +344,7 @@ class ReaderWriter(utils.IterableMap):
                         adds[key] = None
                 else:
                     maker.add(key, value)
-            for (key, value) in adds.items():
+            for (key, value) in list(adds.items()):
                 if value is not None:
                     maker.add(key, value)
             cdb.close()
@@ -418,7 +418,7 @@ class ReaderWriter(utils.IterableMap):
 
     def items(self):
         already = set()
-        for (key, value) in self.cdb.items():
+        for (key, value) in list(self.cdb.items()):
             if key in self.removals or key in already:
                 continue
             elif key in self.adds:
@@ -426,7 +426,7 @@ class ReaderWriter(utils.IterableMap):
                 yield (key, self.adds[key])
             else:
                 yield (key, value)
-        for (key, value) in self.adds.items():
+        for (key, value) in list(self.adds.items()):
             if key not in already:
                 yield (key, value)
 

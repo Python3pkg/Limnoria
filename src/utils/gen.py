@@ -28,7 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 ###
 
-from __future__ import print_function
+
 
 import os
 import sys
@@ -222,30 +222,30 @@ class IterableMap(object):
     def items(self):
         if minisix.PY3 and hasattr(self, 'iteritems'):
             # For old plugins
-            return self.iteritems() # avoid 2to3
+            return iter(self.items()) # avoid 2to3
         else:
             raise NotImplementedError()
     __iter__ = items
 
     def keys(self):
-        for (key, __) in self.items():
+        for (key, __) in list(self.items()):
             yield key
 
     def values(self):
-        for (__, value) in self.items():
+        for (__, value) in list(self.items()):
             yield value
 
 
     @warn_non_constant_time
     def __len__(self):
         ret = 0
-        for __ in self.items():
+        for __ in list(self.items()):
             ret += 1
         return ret
 
     @warn_non_constant_time
     def __bool__(self):
-        for __ in self.items():
+        for __ in list(self.items()):
             return True
         return False
     __nonzero__ = __bool__
@@ -291,19 +291,19 @@ class InsensitivePreservingDict(collections.MutableMapping):
         return len(self.data)
 
     def items(self):
-        return self.data.values()
+        return list(self.data.values())
 
     def items(self):
-        return self.data.values()
+        return list(self.data.values())
 
     def keys(self):
         L = []
-        for (k, __) in self.items():
+        for (k, __) in list(self.items()):
             L.append(k)
         return L
 
     def __reduce__(self):
-        return (self.__class__, (dict(self.data.values()),))
+        return (self.__class__, (dict(list(self.data.values())),))
 
 
 class NormalizingSet(set):

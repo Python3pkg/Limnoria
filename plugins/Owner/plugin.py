@@ -98,7 +98,7 @@ class Owner(callbacks.Plugin):
         # This needs to be done before we connect to any networks so that the
         # children of supybot.plugins (the actual plugins) exist and can be
         # loaded.
-        for (name, s) in registry._cache.items():
+        for (name, s) in list(registry._cache.items()):
             if 'alwaysLoadDefault' in name or 'alwaysLoadImportant' in name:
                 continue
             if name.startswith('supybot.plugins'):

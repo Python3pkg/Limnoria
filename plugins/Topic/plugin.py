@@ -110,7 +110,7 @@ addConverter('canChangeTopic', canChangeTopic)
 
 
 def splitTopic(topic, separator):
-    return list(filter(None, topic.split(separator)))
+    return list([_f for _f in topic.split(separator) if _f])
 
 datadir = conf.supybot.directories.data()
 filename = conf.supybot.directories.data.dirize('Topic.pickle')

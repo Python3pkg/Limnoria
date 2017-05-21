@@ -76,8 +76,8 @@ class ChannelLogger(callbacks.Plugin):
         self.logs.clear()
 
     def _logs(self):
-        for logs in self.logs.values():
-            for log in logs.values():
+        for logs in list(self.logs.values()):
+            for log in list(logs.values()):
                 yield log
 
     def flush(self):
@@ -115,7 +115,7 @@ class ChannelLogger(callbacks.Plugin):
         return logDir
 
     def checkLogNames(self):
-        for (irc, logs) in self.logs.items():
+        for (irc, logs) in list(self.logs.items()):
             for (channel, log) in list(logs.items()):
                 if self.registryValue('rotateLogs', channel):
                     name = self.getLogName(channel)

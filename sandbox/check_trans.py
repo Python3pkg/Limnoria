@@ -46,9 +46,9 @@ def _checkCore(corePath):
         potPath = os.path.join(os.getcwd(), 'locales', translation)
         po = open(potPath)
         if checkTranslation(pot, po):
-            print('OK:      ' + potPath)
+            print(('OK:      ' + potPath))
         else:
-            print(ansi.RED + 'ERROR:   ' + potPath + ansi.RESET)
+            print((ansi.RED + 'ERROR:   ' + potPath + ansi.RESET))
 
 
 @changedir
@@ -63,9 +63,9 @@ def checkPlugin(pluginPath):
         potPath = os.path.join(os.getcwd(), 'locales', translation)
         po = open(potPath)
         if checkTranslation(pot, po):
-            print('OK:      ' + potPath)
+            print(('OK:      ' + potPath))
         else:
-            print(ansi.RED + 'ERROR:   ' + potPath + ansi.RESET)
+            print((ansi.RED + 'ERROR:   ' + potPath + ansi.RESET))
 
 def checkTranslation(pot, po):
     checking = False
